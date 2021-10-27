@@ -21,6 +21,7 @@
             <th>Email Address</th>
             <th>Age</th>
             <th>Address</th>
+            <th>Assigned Car</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -37,6 +38,9 @@
             <td th:text="${customer.emailAddress}">Email Address</td>
             <td th:text="${customer.age}">Age</td>
             <td th:text="${customer.address}">Address</td>
+            <td th:text="${customer.car}? ${customer.car.make} + ' ' + ${customer.car.model} : '(no car assigned)'">
+                Assigned Car
+            </td>
             <td>
                 <!-- actions -->
                 <a th:href="@{'/edit/' + ${customer.id}}">Edit</a> |
