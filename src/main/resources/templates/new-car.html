@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <title>Create New Car</title>
+</head>
+<body>
+<div align="center">
+    <h1>Create New Car</h1>
+    <br />
+    <!--
+    Here is the form that will be used to save the new car.
+    The form is tied to the Car object added to the model,
+    on submit it will hit the /save-car endpoint using the POST method.
+    -->
+    <form action="#" th:action="@{/save-car}" th:object="${car}" method="post">
+        <!--
+        These input fields are used to collect the information
+        required to complete the referenced Car object.
+        -->
+        <table border="0" cellpadding="10">
+            <tr>
+                <td>Car Make:</td>
+                <td><input type="text" th:field="*{make}" required/></td>
+            </tr>
+            <tr>
+                <td>Car Model:</td>
+                <td><input type="text" th:field="*{model}" required/></td>
+            </tr>
+            <tr>
+                <td colspan="2"><button type="submit">Save Car</button> </td>
+            </tr>
+        </table>
+    </form>
+</div>
+</body>
+</html>
