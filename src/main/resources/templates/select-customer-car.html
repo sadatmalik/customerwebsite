@@ -33,9 +33,10 @@
             <td th:text="${car.id}">Car ID</td>
             <td th:text="${car.make}">Make</td>
             <td th:text="${car.model}">Model</td>
-            <td>
+            <td th:if="${car.customer} == null">
                 <a th:href="@{'/assign-car/' + ${customer.id} + '/' + ${car.id}}">Select</a>
             </td>
+            <td th:if="${car.customer} != null" th:text="'Assigned'">Assigned</td>
         </tr>
         </tbody>
     </table>
