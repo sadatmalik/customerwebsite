@@ -82,7 +82,6 @@ public class HomeController {
             model.addAttribute("error", e.getMessage());
             return "error";
         }
-
     }
 
     @GetMapping("/assign/{id}")
@@ -111,7 +110,18 @@ public class HomeController {
             model.addAttribute("error", e.getMessage());
             return "error";
         }
+    }
 
+    @GetMapping("/remove/{customer_id}")
+    public String removeCarFromCustomer(@PathVariable(name = "customer_id") Long customerId,
+                                        Model model) {
+        try {
+            customerService.removeCar(customerId);
+            return "redirect:/";
+        } catch (NoSuchCustomerException e) {
+            model.addAttribute("error", e.getMessage());
+            return "error";
+        }
     }
 
 }

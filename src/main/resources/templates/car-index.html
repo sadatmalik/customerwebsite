@@ -33,7 +33,9 @@
             <td th:text="${car.id}">Car ID</td>
             <td th:text="${car.make}">Make</td>
             <td th:text="${car.model}">Model</td>
-            <td th:text="${car.customer}? ${car.customer.id} : '(no customer assigned)'">Assigned Customer ID</td>
+            <td th:text="${car.customer}? ${car.customer.fullName} + ' (' + ${car.customer.id} + ')' : '(no customer assigned)'">
+                Assigned Customer ID
+            </td>
         </tr>
         </tbody>
     </table>

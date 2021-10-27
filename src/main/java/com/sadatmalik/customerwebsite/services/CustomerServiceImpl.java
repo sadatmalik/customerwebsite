@@ -82,6 +82,20 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setCar(car);
 
         return customerRepository.save(customer);
+    }
 
+    @Override
+    @Transactional
+    public Customer removeCar(Long customerId) throws NoSuchCustomerException {
+        // TODO: 27/10/2021 refactor this code into a getCustomer method :
+        Optional<Customer> customerOptional = customerRepository.findById(customerId);
+        if (customerOptional.isEmpty()) {
+            throw new NoSuchCustomerException("No customer with ID " + customerId + " could be found.");
+        }
+        Customer customer = customerOptional.get();
+
+        customer.setCar(null);
+
+        return customerRepository.save(customer);
     }
 }

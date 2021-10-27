@@ -19,4 +19,6 @@ public interface CustomerService {
     List<Customer> saveAllCustomer(List<Customer> customerList);
 
     Customer assignCar(Long customerId, Long carId) throws NoSuchCustomerException, NoSuchCarException;
+
+    Customer removeCar(Long customerId) throws NoSuchCustomerException;
 }
