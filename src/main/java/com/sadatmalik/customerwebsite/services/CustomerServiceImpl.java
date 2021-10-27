@@ -1,10 +1,11 @@
 package com.sadatmalik.customerwebsite.services;
 
+import com.sadatmalik.customerwebsite.exceptions.NoSuchCarException;
 import com.sadatmalik.customerwebsite.exceptions.NoSuchCustomerException;
+import com.sadatmalik.customerwebsite.model.Car;
 import com.sadatmalik.customerwebsite.model.Customer;
 import com.sadatmalik.customerwebsite.repositories.CustomerRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,8 +17,8 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class CustomerServiceImpl implements CustomerService {
 
-    @Autowired
-    final CustomerRepository customerRepository;
+    private final CustomerRepository customerRepository;
+    private final CarService carService;
 
     // The findAll function gets all the customers by doing a SELECT query in the DB.
     @Override
@@ -64,5 +65,23 @@ public class CustomerServiceImpl implements CustomerService {
     public List<Customer> saveAllCustomer(List<Customer> customerList) {
         customerList.forEach(Customer::validate);
         return customerRepository.saveAll(customerList);
+    }
+
+    @Override
+    @Transactional
+    public Customer assignCar(Long customerId, Long carId) throws NoSuchCustomerException,
+            NoSuchCarException {
+
+        Optional<Customer> customerOptional = customerRepository.findById(customerId);
+        if (customerOptional.isEmpty()) {
+            throw new NoSuchCustomerException("No customer with ID " + customerId + " could be found.");
+        }
+        Customer customer = customerOptional.get();
+
+        Car car = carService.getCar(carId);
+        customer.setCar(car);
+
+        return customerRepository.save(customer);
+
     }
 }

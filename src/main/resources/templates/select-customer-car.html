@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <title>Create New Car</title>
+</head>
+<body>
+<div align="center">
+    <h1 th:text="'Choose Car for ' + ${customer.fullName}">Choose Car</h1>
+    <br/>
+    <table border="1" cellpadding="10">
+        <thead>
+        <tr>
+            <!--
+            You are creating a table here, where the header will be the Car
+            details and then the other rows will be filled by the data that
+            is sent back in the Model object.
+            -->
+            <th>Car ID</th>
+            <th>Make</th>
+            <th>Model</th>
+            <th>Click to Select</th>
+        </tr>
+        </thead>
+        <!--
+         Now that your headers are defined, you can reference the key-value
+         pair "cars" that was added to the model above.
+         Loop over each car and extract the attributes to match
+         each column name.
+        -->
+        <tbody>
+        <tr th:each="car : ${cars}">
+            <td th:text="${car.id}">Car ID</td>
+            <td th:text="${car.make}">Make</td>
+            <td th:text="${car.model}">Model</td>
+            <td>
+                <a th:href="@{'/assign-car/' + ${customer.id} + '/' + ${car.id}}">Select</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+</body>
+</html>

@@ -1,5 +1,6 @@
 package com.sadatmalik.customerwebsite.services;
 
+import com.sadatmalik.customerwebsite.exceptions.NoSuchCarException;
 import com.sadatmalik.customerwebsite.exceptions.NoSuchCustomerException;
 import com.sadatmalik.customerwebsite.model.Customer;
 
@@ -16,4 +17,6 @@ public interface CustomerService {
     void deleteCustomer(Long id) throws NoSuchCustomerException;
 
     List<Customer> saveAllCustomer(List<Customer> customerList);
+
+    Customer assignCar(Long customerId, Long carId) throws NoSuchCustomerException, NoSuchCarException;
 }
