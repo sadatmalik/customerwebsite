@@ -1,5 +1,6 @@
 package com.sadatmalik.customerwebsite.controllers;
 
+import com.sadatmalik.customerwebsite.exceptions.NoSuchCustomerException;
 import com.sadatmalik.customerwebsite.model.Customer;
 import com.sadatmalik.customerwebsite.services.CustomerService;
 import lombok.RequiredArgsConstructor;
@@ -40,8 +41,13 @@ public class HomeController {
     // As the Model is received back from the view, @ModelAttribute
     // creates a Customer based on the object you collected from
     // the HTML page above
-    public String saveCustomer(@ModelAttribute("customer") Customer customer) {
-        customerService.saveCustomer(customer);
+    public String saveCustomer(@ModelAttribute("customer") Customer customer, Model model) {
+        try {
+            customerService.saveCustomer(customer);
+        } catch (IllegalStateException e) {
+            model.addAttribute("error", e.getMessage());
+            return "error";
+        }
         return "redirect:/";
     }
 
@@ -52,16 +58,29 @@ public class HomeController {
         // to get some experience using both. Model is more common these days,
         // but ModelAndView accomplishes the same thing and can be useful in
         // certain circumstances. The view name is passed to the constructor.
-        ModelAndView mav = new ModelAndView("edit-customer");
-        Customer customer = customerService.getCustomer(id);
-        mav.addObject("customer", customer);
-        return mav;
+        try {
+            Customer customer = customerService.getCustomer(id);
+            ModelAndView mav = new ModelAndView("edit-customer");
+            mav.addObject("customer", customer);
+            return mav;
+
+        } catch (NoSuchCustomerException e) {
+            ModelAndView mav = new ModelAndView("error");
+            mav.addObject("error", e.getMessage());
+            return mav;
+        }
     }
 
     @RequestMapping("/delete/{id}")
-    public String deleteCustomer(@PathVariable(name = "id") Long id) {
-        customerService.deleteCustomer(id);
-        return "redirect:/";
+    public String deleteCustomer(@PathVariable(name = "id") Long id, Model model) {
+        try {
+            customerService.deleteCustomer(id);
+            return "redirect:/";
+        } catch (NoSuchCustomerException e) {
+            model.addAttribute("error", e.getMessage());
+            return "error";
+        }
+
     }
 
 }

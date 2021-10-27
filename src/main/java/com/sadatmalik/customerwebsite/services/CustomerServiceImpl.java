@@ -1,5 +1,6 @@
 package com.sadatmalik.customerwebsite.services;
 
+import com.sadatmalik.customerwebsite.exceptions.NoSuchCustomerException;
 import com.sadatmalik.customerwebsite.model.Customer;
 import com.sadatmalik.customerwebsite.repositories.CustomerRepository;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,20 +29,32 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     @Transactional
     public Customer saveCustomer(Customer customer) {
+        customer.validate();
         return customerRepository.save(customer);
     }
 
     // The findById function uses a SELECT query with a WHERE clause in the DB.
     @Override
-    public Customer getCustomer(Long id) {
-        return customerRepository.findById(id)
-                .orElse(null);
+    public Customer getCustomer(Long id) throws NoSuchCustomerException {
+        Optional<Customer> customerOptional = customerRepository.findById(id);
+
+        if (customerOptional.isEmpty()) {
+            throw new NoSuchCustomerException("No customer with ID " + id + " could be found.");
+        }
+
+        return customerOptional.get();
     }
 
     // The deleteById function deletes the customer by doing a DELETE in the DB.
     @Override
     @Transactional
-    public void deleteCustomer(Long id) {
+    public void deleteCustomer(Long id) throws NoSuchCustomerException {
+        Optional<Customer> customerOptional = customerRepository.findById(id);
+
+        if (customerOptional.isEmpty()) {
+            throw new NoSuchCustomerException("No customer with ID " + id + " could be found.");
+        }
+
         customerRepository.deleteById(id);
     }
 
@@ -48,6 +62,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     @Transactional
     public List<Customer> saveAllCustomer(List<Customer> customerList) {
+        customerList.forEach(Customer::validate);
         return customerRepository.saveAll(customerList);
     }
 }

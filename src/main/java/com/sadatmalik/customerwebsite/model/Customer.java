@@ -19,4 +19,22 @@ public class Customer {
     private String emailAddress;
     private Integer age;
     private String address;
+
+    public void validate() throws IllegalStateException {
+        if (fullName == null || fullName.equals("")) {
+            throw new IllegalStateException("You must enter a name");
+        }
+
+        if (emailAddress == null || emailAddress.equals("")) {
+            throw new IllegalStateException("You must enter an email address");
+        }
+
+        if (age == null || age < 0) {
+            throw new IllegalStateException("You must enter a valid age > 0");
+        }
+
+        if (address == null || address.equals("")) {
+            throw new IllegalStateException("You must enter an address");
+        }
+    }
 }
