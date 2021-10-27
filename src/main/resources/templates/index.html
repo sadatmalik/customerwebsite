@@ -44,7 +44,9 @@
             <td>
                 <!-- actions -->
                 <a th:href="@{'/edit/' + ${customer.id}}">Edit</a> |
-                <a th:href="@{'/delete/' + ${customer.id}}">Delete</a>
+                <a th:href="@{'/delete/' + ${customer.id}}">Delete</a> |
+                <a th:if="${customer.car} == null" th:href="@{'/assign/' + ${customer.id}}">Assign</a>
+                <a th:if="${customer.car} != null" th:href="@{'/remove/' + ${customer.id}}">Remove</a>
             </td>
         </tr>
         </tbody>
