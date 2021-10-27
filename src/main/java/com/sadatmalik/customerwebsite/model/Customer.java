@@ -20,6 +20,11 @@ public class Customer {
     private Integer age;
     private String address;
 
+    @OneToOne(
+            optional = true
+    )
+    private Car car;
+
     public void validate() throws IllegalStateException {
         if (fullName == null || fullName.equals("")) {
             throw new IllegalStateException("You must enter a name");
