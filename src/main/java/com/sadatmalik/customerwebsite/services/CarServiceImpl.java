@@ -26,7 +26,7 @@ public class CarServiceImpl implements CarService {
     // The save function uses an INSERT query in the DB.
     @Override
     @Transactional
-    public Car saveCar(Car car) {
+    public Car saveCar(Car car) throws IllegalStateException {
         car.validate();
         return carRepo.save(car);
     }
@@ -57,7 +57,7 @@ public class CarServiceImpl implements CarService {
 
     // The saveAll function would do multiple INSERTS into the DB.
     @Override
-    public List<Car> saveAllCars(List<Car> carList) {
+    public List<Car> saveAllCars(List<Car> carList) throws IllegalStateException {
         carList.forEach(Car::validate);
         return carRepo.saveAll(carList);
     }

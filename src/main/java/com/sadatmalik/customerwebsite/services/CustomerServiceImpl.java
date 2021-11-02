@@ -29,7 +29,7 @@ public class CustomerServiceImpl implements CustomerService {
     // The save function uses an INSERT query in the DB.
     @Override
     @Transactional
-    public Customer saveCustomer(Customer customer) {
+    public Customer saveCustomer(Customer customer) throws IllegalStateException {
         customer.validate();
         return customerRepository.save(customer);
     }
@@ -62,7 +62,7 @@ public class CustomerServiceImpl implements CustomerService {
     // The saveAll function would do multiple INSERTS into the DB.
     @Override
     @Transactional
-    public List<Customer> saveAllCustomer(List<Customer> customerList) {
+    public List<Customer> saveAllCustomer(List<Customer> customerList) throws IllegalStateException {
         customerList.forEach(Customer::validate);
         return customerRepository.saveAll(customerList);
     }
