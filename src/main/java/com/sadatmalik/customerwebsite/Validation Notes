@@ -1,0 +1,21 @@
+
+Customer:
+    @Valid
+    @Email
+    private String emailAddress;
+
+HomeController:
+    public String saveCustomer(@ModelAttribute("customer") @Valid Customer customer,
+                               BindingResult bindingResult, Model model) {
+
+        if (bindingResult.hasErrors()) {
+            return "new-customer";
+        }
+
+new-customer.html
+<!--                <td>Email Address:</td>-->
+        <div th:switch="${#fields.hasErrors('emailAddress')}">
+            <span class="text-danger" th:case="true" th:errors="*{emailAddress}"></span>
+            <span id="emailHelp" class="form-text" th:case="false">Email Address:</span>
+        </div>
+        <td><input type="text" th:field="*{emailAddress}" /></td>
