@@ -34,6 +34,9 @@ public class User implements UserDetails {
     )
     List<Authority> authorities;
 
+    @OneToOne
+    private Customer customer; // user encapsulates a customer
+
     private boolean accountNonExpired;
     private boolean accountNonLocked;
     private boolean credentialsNonExpired;

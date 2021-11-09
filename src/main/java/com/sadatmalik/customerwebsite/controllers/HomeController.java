@@ -36,28 +36,6 @@ public class HomeController {
         return "customer-list";
     }
 
-    @GetMapping("/new")
-    public String showNewCustomerPage(Model model) {
-        // Here a new (empty) Customer is created and then sent to the view
-        Customer customer = new Customer();
-        model.addAttribute("customer", customer);
-        return "new-customer";
-    }
-
-    @PostMapping(value = {"/save", "/update/{id}"})
-    // As the Model is received back from the view, @ModelAttribute
-    // creates a Customer based on the object you collected from
-    // the HTML page above
-    public String saveCustomer(@ModelAttribute("customer") Customer customer, Model model) {
-        try {
-            customerService.saveCustomer(customer);
-        } catch (IllegalStateException e) {
-            model.addAttribute("error", e.getMessage());
-            return "error";
-        }
-        return "redirect:/customer-list";
-    }
-
     @GetMapping("/edit/{id}")
     // The path variable "id" is used to pull a customer from the database
     public ModelAndView showEditCustomerPage(@PathVariable(name = "id") Long id) {

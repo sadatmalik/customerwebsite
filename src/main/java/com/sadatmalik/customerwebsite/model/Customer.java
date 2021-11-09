@@ -25,6 +25,9 @@ public class Customer {
     )
     private Car car;
 
+    @OneToOne(mappedBy = "customer")
+    private User user;
+
     public void validate() throws IllegalStateException {
         if (fullName == null || fullName.equals("")) {
             throw new IllegalStateException("You must enter a name");

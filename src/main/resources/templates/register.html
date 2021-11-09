@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <title>Register New User</title>
+</head>
+<body>
+<div align="center">
+    <h1>Register New User</h1>
+    <br />
+    <!--
+    Here is the form that will be used to save the new user.
+    The form is tied to the User object you added to the model,
+    and on submit it will hit the /save endpoint using the POST method.
+    -->
+    <form action="#" th:action="@{/register}" th:object="${user}" method="post">
+        <!--
+        These input fields are used to collect the information
+        required to complete the referenced Customer object.
+        -->
+        <table border="0" cellpadding="10">
+            <tr><h2>Username and Password:</h2></tr>
+            <tr>
+                <td>Username:</td>
+                <td><input type="text" th:field="*{username}" required/></td>
+            </tr>
+            <tr>
+                <td>Password:</td>
+                <td><input type="password" th:field="*{password}" required/></td>
+            </tr>
+        </table>
+
+        <table border="0" cellpadding="10">
+            <tr><h2>Customer Details:</h2></tr>
+            <tr>
+                <td>Customer Name:</td>
+                <td><input type="text" th:field="*{customer.fullName}" required/></td>
+            </tr>
+            <tr>
+                <td>Email Address:</td>
+                <td><input type="email" th:field="*{customer.emailAddress}" required/></td>
+            </tr>
+            <tr>
+                <td>Age:</td>
+                <td><input type="number" th:field="*{customer.age}" required/></td>
+            </tr>
+            <tr>
+                <td>Address:</td>
+                <td><textarea type="text" th:field="*{customer.address}" required></textarea></td>
+            </tr>
+            <tr>
+                <td colspan="2"><button type="submit">Register</button> </td>
+            </tr>
+        </table>
+    </form>
+</div>
+</body>
+</html>
