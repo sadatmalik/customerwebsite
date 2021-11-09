@@ -23,12 +23,17 @@ public class HomeController {
 
     @GetMapping("/")
     public String viewHomePage(Model model) {
+        return "index";
+    }
+
+    @GetMapping("/customer-list")
+    public String showCustomerList(Model model) {
         // Here you call the service to retrieve all the customers
         final List<Customer> customerList = customerService.getCustomers();
 
         // Once the customers are retrieved, you can store them in model and return it to the view
         model.addAttribute("customerList", customerList);
-        return "index";
+        return "customer-list";
     }
 
     @GetMapping("/new")
@@ -50,7 +55,7 @@ public class HomeController {
             model.addAttribute("error", e.getMessage());
             return "error";
         }
-        return "redirect:/";
+        return "redirect:/customer-list";
     }
 
     @GetMapping("/edit/{id}")
@@ -77,7 +82,7 @@ public class HomeController {
     public String deleteCustomer(@PathVariable(name = "id") Long id, Model model) {
         try {
             customerService.deleteCustomer(id);
-            return "redirect:/";
+            return "redirect:/customer-list";
         } catch (NoSuchCustomerException e) {
             model.addAttribute("error", e.getMessage());
             return "error";
@@ -104,7 +109,7 @@ public class HomeController {
                                       Model model) {
         try {
             customerService.assignCar(customerId, carId);
-            return "redirect:/";
+            return "redirect:/customer-list";
 
         } catch (NoSuchCarException | NoSuchCustomerException e) {
             model.addAttribute("error", e.getMessage());
@@ -117,7 +122,7 @@ public class HomeController {
                                         Model model) {
         try {
             customerService.removeCar(customerId);
-            return "redirect:/";
+            return "redirect:/customer-list";
         } catch (NoSuchCustomerException e) {
             model.addAttribute("error", e.getMessage());
             return "error";
