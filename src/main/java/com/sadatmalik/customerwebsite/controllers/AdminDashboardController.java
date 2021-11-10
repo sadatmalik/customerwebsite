@@ -64,19 +64,7 @@ public class AdminDashboardController {
         return "redirect:/admin-dashboard";
     }
 
-    @GetMapping("/assign-car/{customer_id}")
-    public String showAssignCarPage(@PathVariable(name = "customer_id") Long id, Model model) {
-        try {
-            Customer customer = customerService.getCustomer(id);
-            model.addAttribute("customer", customer);
-            List<Car> cars = carService.getCars();
-            model.addAttribute("cars", cars);
-            return "assign-car";
-        } catch (NoSuchCustomerException e) {
-            model.addAttribute("error", e.getMessage());
-            return "error";
-        }
-    }
+
 
 
 }
