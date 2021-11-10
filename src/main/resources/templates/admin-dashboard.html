@@ -53,7 +53,7 @@
                     <a th:href="@{'/edit-customer/' + ${customer.id}}">Edit</a> |
                     <a th:href="@{'/delete-user/' + ${customer.id}}">Delete</a> |
                     <a th:if="${customer.car} == null" th:href="@{'/assign-car/' + ${customer.id}}">Assign</a>
-                    <a th:if="${customer.car} != null" th:href="@{'/unassign-car/' + ${customer.id}}">Remove</a>
+                    <a th:if="${customer.car} != null" th:href="@{'/unassign-car/' + ${customer.id}}">Un-assign</a>
                 </td>
             </tr>
             </tbody>
@@ -93,8 +93,10 @@
                 <td th:text="${car.customer}? ${car.customer.fullName} + ' (' + ${car.customer.id} + ')' : '(no customer assigned)'">
                     Assigned Customer ID
                 </td>
-                <a th:if="${car.customer} != null" th:href="@{'/unassign-car/' + ${car.customer.id}}">Unassign</a>
-                <a th:if="${car.customer} == null" th:href="@{'/delete-car/' + ${car.id}}">Remove</a>
+                <td>
+                    <a th:if="${car.customer} != null" th:href="@{'/unassign-car/' + ${car.customer.id}}">Un-assign</a>
+                    <a th:if="${car.customer} == null" th:href="@{'/delete-car/' + ${car.id}}">Remove</a>
+                </td>
             </tr>
             </tbody>
         </table>

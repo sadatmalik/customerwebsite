@@ -9,11 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 @Controller
-public class CarController {
+public class NewCarController {
 
     private final CarService carService;
 
@@ -34,12 +32,4 @@ public class CarController {
         }
         return "redirect:/cars";
     }
-
-    @GetMapping("/cars")
-    public String showCars(Model model) {
-        List<Car> cars = carService.getCars();
-        model.addAttribute("cars", cars);
-        return "car-index";
-    }
-
 }

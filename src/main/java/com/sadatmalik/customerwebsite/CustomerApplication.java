@@ -1,32 +1,30 @@
 package com.sadatmalik.customerwebsite;
 
 import com.sadatmalik.customerwebsite.model.Authority;
+import com.sadatmalik.customerwebsite.model.Car;
 import com.sadatmalik.customerwebsite.model.Customer;
 import com.sadatmalik.customerwebsite.model.User;
 import com.sadatmalik.customerwebsite.repositories.RoleRepository;
+import com.sadatmalik.customerwebsite.services.CarService;
 import com.sadatmalik.customerwebsite.services.CustomerService;
 import com.sadatmalik.customerwebsite.services.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 @RequiredArgsConstructor
 @SpringBootApplication
 public class CustomerApplication implements CommandLineRunner {
 
-	@Autowired
 	private final CustomerService customerService;
-
-	@Autowired
 	private final UserService userService;
-
-	@Autowired
 	private final RoleRepository roleRepository;
+	private final CarService carService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(CustomerApplication.class, args);
@@ -115,6 +113,22 @@ public class CustomerApplication implements CommandLineRunner {
 			userService.saveUser(userTwo);
 			userService.saveUser(userThree);
 
+		}
+
+		if (carService.getCars().isEmpty()) {
+			Car porsche = Car.builder().make("Porsche").model("911").build();
+			Car mondeo = Car.builder().make("Ford").model("Mondeo").build();
+			Car volvo = Car.builder().make("Volvo").model("V70").build();
+			Car tesla = Car.builder().make("Tesla").model("Model S").build();
+			Car falcon = Car.builder().make("Millennium").model("Falcom").build();
+			Car merc = Car.builder().make("Mercedes").model("C-class").build();
+			Car bmw = Car.builder().make("BMW").model("7 series").build();
+			Car range = Car.builder().make("Range Rover").model("Vogue").build();
+
+			List<Car> savedCars = carService.saveAllCars(List.of(porsche, mondeo, volvo, tesla,
+					falcon, merc, bmw, range));
+
+			System.out.println(savedCars.get(0).getMake());
 		}
 
 	}

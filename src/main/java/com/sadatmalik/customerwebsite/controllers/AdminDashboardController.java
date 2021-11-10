@@ -53,7 +53,7 @@ public class AdminDashboardController {
     }
 
     @PostMapping(value = {"/update-customer/{id}"})
-    public String saveCustomerAndUser(@ModelAttribute("customer") Customer customer,
+    public String saveCustomer(@ModelAttribute("customer") Customer customer,
                                       Model model) {
         try {
             customerService.saveCustomer(customer);
@@ -63,5 +63,20 @@ public class AdminDashboardController {
         }
         return "redirect:/admin-dashboard";
     }
-    
+
+    @GetMapping("/assign-car/{customer_id}")
+    public String showAssignCarPage(@PathVariable(name = "customer_id") Long id, Model model) {
+        try {
+            Customer customer = customerService.getCustomer(id);
+            model.addAttribute("customer", customer);
+            List<Car> cars = carService.getCars();
+            model.addAttribute("cars", cars);
+            return "assign-car";
+        } catch (NoSuchCustomerException e) {
+            model.addAttribute("error", e.getMessage());
+            return "error";
+        }
+    }
+
+
 }

@@ -45,6 +45,7 @@ public class CarServiceImpl implements CarService {
 
     // The deleteById function deletes the car by doing a DELETE in the DB.
     @Override
+    @Transactional
     public void deleteCar(Long id) throws NoSuchCarException {
         Optional<Car> carOptional = carRepo.findById(id);
 
@@ -57,6 +58,7 @@ public class CarServiceImpl implements CarService {
 
     // The saveAll function would do multiple INSERTS into the DB.
     @Override
+    @Transactional
     public List<Car> saveAllCars(List<Car> carList) throws IllegalStateException {
         carList.forEach(Car::validate);
         return carRepo.saveAll(carList);
