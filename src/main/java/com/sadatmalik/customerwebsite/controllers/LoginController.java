@@ -2,29 +2,50 @@ package com.sadatmalik.customerwebsite.controllers;
 
 import com.sadatmalik.customerwebsite.exceptions.NoSuchCarException;
 import com.sadatmalik.customerwebsite.exceptions.NoSuchCustomerException;
+import com.sadatmalik.customerwebsite.model.Authority;
 import com.sadatmalik.customerwebsite.model.Car;
 import com.sadatmalik.customerwebsite.model.Customer;
+import com.sadatmalik.customerwebsite.model.User;
 import com.sadatmalik.customerwebsite.services.CarService;
 import com.sadatmalik.customerwebsite.services.CustomerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
-public class HomeController {
+public class LoginController {
 
     private final CustomerService customerService;
     private final CarService carService;
 
     @GetMapping("/")
-    public String viewHomePage() {
+    public String loginPage() {
         return "index";
     }
+
+    @GetMapping("/login?success")
+    public String showAdminOrUserDashboard(@CurrentSecurityContext Authentication authentication) {
+        List<Authority> auth = ((User) authentication.getPrincipal()).getAuthorities();
+
+        if (auth.get(0).getAuthority().equals(Authority.RoleEnum.ADMIN_ROLE)) {
+            return "admin-dashboard";
+        } else {
+            // assumes USER_ROLE as ony have 2 roles in our system at the moment
+            return "user-dashboard";
+        }
+    }
+
+
+
 
 
 

@@ -10,20 +10,27 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity(debug = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Bean
+    public AuthenticationSuccessHandler loginSuccessHandler(){
+        return new LoginSuccessHandler();
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/", "/webjars/", "/css/", "/login/", "/images/", "/register").permitAll()
-                .antMatchers("/customer-view").hasAuthority("USER_ROLE")
+                .antMatchers("/user-dashboard").hasAuthority("USER_ROLE")
                 .anyRequest().hasAuthority("ADMIN_ROLE")
                 .and()
-                .formLogin();
+                .formLogin()
+                .successHandler(loginSuccessHandler());
     }
 
     @Autowired
