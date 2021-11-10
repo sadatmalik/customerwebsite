@@ -1,5 +1,7 @@
 package com.sadatmalik.customerwebsite.controllers;
 
+import com.sadatmalik.customerwebsite.exceptions.NoSuchCustomerException;
+import com.sadatmalik.customerwebsite.exceptions.NoSuchUserException;
 import com.sadatmalik.customerwebsite.model.Authority;
 import com.sadatmalik.customerwebsite.model.Customer;
 import com.sadatmalik.customerwebsite.model.User;
@@ -11,9 +13,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -65,5 +66,36 @@ public class UserController {
 
         return "index";
     }
+
+    @GetMapping("/edit-customer/{id}")
+    // The path variable "id" is used to pull a customer from the database
+    public ModelAndView showEditCustomerPage(@PathVariable(name = "id") Long id) {
+        try {
+            Customer customer = customerService.getCustomer(id);
+            ModelAndView mav = new ModelAndView("edit-customer");
+            mav.addObject("customer", customer);
+            return mav;
+
+        } catch (NoSuchCustomerException e) {
+            ModelAndView mav = new ModelAndView("error");
+            mav.addObject("error", e.getMessage());
+            return mav;
+        }
+    }
+
+    @RequestMapping("/delete-user/{cust_id}")
+    public String deleteCustomer(@PathVariable(name = "cust_id") Long id, Model model) {
+
+        try {
+            Customer customer = customerService.getCustomer(id);
+            userService.deleteUser(customer.getUser().getId());
+            customerService.deleteCustomer(id);
+            return "redirect:/admin-dashboard";
+        } catch (NoSuchCustomerException | NoSuchUserException e) {
+            model.addAttribute("error", e.getMessage());
+            return "error";
+        }
+    }
+
 
 }

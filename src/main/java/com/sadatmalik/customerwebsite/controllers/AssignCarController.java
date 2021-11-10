@@ -49,4 +49,16 @@ public class AssignCarController {
         }
     }
 
+    @GetMapping("/unassign-car/{customer_id}")
+    public String removeCarFromCustomer(@PathVariable(name = "customer_id") Long customerId,
+                                        Model model) {
+        try {
+            customerService.removeCar(customerId);
+            return "redirect:/admin-dashboard";
+        } catch (NoSuchCustomerException e) {
+            model.addAttribute("error", e.getMessage());
+            return "error";
+        }
+    }
+
 }

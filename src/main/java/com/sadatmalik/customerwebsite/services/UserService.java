@@ -1,5 +1,6 @@
 package com.sadatmalik.customerwebsite.services;
 
+import com.sadatmalik.customerwebsite.exceptions.NoSuchUserException;
 import com.sadatmalik.customerwebsite.model.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
@@ -9,4 +10,6 @@ public interface UserService extends UserDetailsService {
     public List<User> findAll();
 
     public User saveUser(User user);
+
+    public void deleteUser(Long id) throws NoSuchUserException;
 }

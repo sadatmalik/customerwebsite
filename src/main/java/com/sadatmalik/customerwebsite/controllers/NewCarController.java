@@ -30,6 +30,6 @@ public class NewCarController {
             model.addAttribute("error", e.getMessage());
             return "error";
         }
-        return "redirect:/cars";
+        return "redirect:/admin-dashboard";
     }
 }

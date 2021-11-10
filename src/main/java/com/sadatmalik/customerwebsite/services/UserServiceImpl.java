@@ -1,5 +1,6 @@
 package com.sadatmalik.customerwebsite.services;
 
+import com.sadatmalik.customerwebsite.exceptions.NoSuchUserException;
 import com.sadatmalik.customerwebsite.model.Authority;
 import com.sadatmalik.customerwebsite.model.User;
 import com.sadatmalik.customerwebsite.repositories.RoleRepository;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -52,4 +54,17 @@ public class UserServiceImpl implements UserService {
 
         return userRepo.save(user);
     }
+
+    @Override
+    @Transactional
+    public void deleteUser(Long id) throws NoSuchUserException {
+        Optional<User> userOptional = userRepo.findById(id);
+
+        if (userOptional.isEmpty()) {
+            throw new NoSuchUserException("No user with ID " + id + " could be found.");
+        }
+
+        userRepo.deleteById(id);
+    }
+
 }

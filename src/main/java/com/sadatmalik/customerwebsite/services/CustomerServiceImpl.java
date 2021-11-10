@@ -46,7 +46,6 @@ public class CustomerServiceImpl implements CustomerService {
         return customerOptional.get();
     }
 
-    // The deleteById function deletes the customer by doing a DELETE in the DB.
     @Override
     @Transactional
     public void deleteCustomer(Long id) throws NoSuchCustomerException {
