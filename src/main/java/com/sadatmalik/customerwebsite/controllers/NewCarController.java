@@ -1,13 +1,12 @@
 package com.sadatmalik.customerwebsite.controllers;
 
+import com.sadatmalik.customerwebsite.exceptions.NoSuchCarException;
 import com.sadatmalik.customerwebsite.model.Car;
 import com.sadatmalik.customerwebsite.services.CarService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @Controller
@@ -32,4 +31,17 @@ public class NewCarController {
         }
         return "redirect:/admin-dashboard";
     }
+
+    @RequestMapping("/delete-car/{car_id}")
+    public String deleteCustomer(@PathVariable(name = "car_id") Long id, Model model) {
+
+        try {
+            carService.deleteCar(id);
+            return "redirect:/admin-dashboard";
+        } catch (NoSuchCarException e) {
+            model.addAttribute("error", e.getMessage());
+            return "error";
+        }
+    }
+
 }
