@@ -10,6 +10,67 @@
 <div align="center">
     <h1>User Dashboard</h1>
 
+    <a th:href="@{/logout}">Logout</a>
+
+    <!-- User details -->
+    <div align="center">
+        <h1>Your Info</h1>
+        <table border="1" cellpadding="10">
+            <tbody>
+            <tr>
+                <td>Username</td>
+                <td th:text="${user.username}">Username</td>
+            </tr>
+            <tr>
+                <td>Full Name</td>
+                <td th:text="${user.customer.fullName}">Full Name</td>
+            </tr>
+            <tr>
+                <td>Email Address</td>
+                <td th:text="${user.customer.emailAddress}">Email Address</td>
+            </tr>
+            <tr>
+                <td>Age</td>
+                <td th:text="${user.customer.age}">Age</td>
+            </tr>
+            <tr>
+                <td>Address</td>
+                <td th:text="${user.customer.address}">Address</td>
+            </tr>
+            <tr>
+                <td>Assigned Car</td>
+                <td th:text="${user.customer.car}? ${user.customer.car.make} + ' ' + ${user.customer.car.model} :
+                '(no car assigned)'">
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Cars -->
+    <div align="center">
+        <h1>Car List</h1>
+        <table border="1" cellpadding="10">
+            <thead>
+            <tr>
+                <th>Car ID</th>
+                <th>Make</th>
+                <th>Model</th>
+                <th>Assigned Customer ID</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="car : ${cars}">
+                <td th:text="${car.id}">Car ID</td>
+                <td th:text="${car.make}">Make</td>
+                <td th:text="${car.model}">Model</td>
+                <td th:text="${car.customer}? ${car.customer.fullName} + ' (' + ${car.customer.id} + ')' : '(no customer assigned)'">
+                    Assigned Customer ID
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
 </div>
 
 </body>
