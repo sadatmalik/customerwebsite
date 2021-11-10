@@ -13,7 +13,7 @@
     The form is tied to the User object you added to the model,
     and on submit it will hit the /save endpoint using the POST method.
     -->
-    <form action="#" th:action="@{/register}" th:object="${user}" method="post">
+    <form action="#" th:action="@{/save-user}" th:object="${user}" method="post">
         <!--
         These input fields are used to collect the information
         required to complete the referenced Customer object.

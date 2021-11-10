@@ -22,31 +22,24 @@ public class UserController {
     @Autowired
     private final UserService userService;
 
-    @GetMapping("/new")
-    public String showNewCustomerPage(Model model) {
-        // Here a new (empty) Customer is created and then sent to the view
-        Customer customer = new Customer();
-        model.addAttribute("customer", customer);
-        return "new-customer";
-    }
-
     @GetMapping("/new-user")
-    public String showRegisterNewUserPage(Model model) {
+    public String showNewUserForm(Model model) {
         User user = new User();
         user.setCustomer(new Customer());
         model.addAttribute("user", user);
-        return "register";
+        return "new-user";
     }
 
-    @PostMapping("/register")
+    @PostMapping("/save-user")
     public String registerNewUser(@ModelAttribute("user") User user, Model model) {
-        // Here a new (empty) Customer is created and then sent to the view
         Customer savedCustomer = customerService.saveCustomer(user.getCustomer());
         user.setCustomer(savedCustomer);
         User savedUser = userService.saveUser(user);
-        model.addAttribute("customer", savedCustomer);
-        return "new-customer";
+        return "index";
     }
+
+
+
 
     @PostMapping(value = {"/save", "/update/{id}"})
     // As the Model is received back from the view, @ModelAttribute
