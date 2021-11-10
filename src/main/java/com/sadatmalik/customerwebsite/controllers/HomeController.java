@@ -22,9 +22,12 @@ public class HomeController {
     private final CarService carService;
 
     @GetMapping("/")
-    public String viewHomePage(Model model) {
+    public String viewHomePage() {
         return "index";
     }
+
+
+
 
     @GetMapping("/customer-list")
     public String showCustomerList(Model model) {
