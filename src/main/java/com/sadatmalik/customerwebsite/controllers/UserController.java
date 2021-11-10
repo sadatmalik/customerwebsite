@@ -66,24 +66,4 @@ public class UserController {
         return "index";
     }
 
-
-
-
-
-
-    @PostMapping(value = {"/save", "/update/{id}"})
-    // As the Model is received back from the view, @ModelAttribute
-    // creates a Customer based on the object you collected from
-    // the HTML page above
-    public String saveCustomerAndUser(@ModelAttribute("customer") Customer customer,
-                                      Model model) {
-        try {
-            Customer savedCustomer = customerService.saveCustomer(customer);
-        } catch (IllegalStateException e) {
-            model.addAttribute("error", e.getMessage());
-            return "error";
-        }
-        return "redirect:/customer-list";
-    }
-
 }
