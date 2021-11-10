@@ -10,6 +10,97 @@
 <div align="center">
     <h1>Admin Dashboard</h1>
 
+    <a th:href="@{/logout}">Logout</a>
+
+    <div align="center">
+        <h1>Customers</h1>
+        <br/><br/>
+        <table border="1" cellpadding="10">
+            <thead>
+            <tr>
+                <!--
+                You are creating a table here, where the header will be the Customer
+                details and then the other rows will be filled by the data that
+                you send back in the Model object.
+                -->
+                <th>Customer ID</th>
+                <th>Full Name</th>
+                <th>Email Address</th>
+                <th>Age</th>
+                <th>Address</th>
+                <th>Assigned Car</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <!--
+             Now that your headers are defined, you can reference the key-value
+             pair "customerList" that you added to the model above.
+             Thymeleaf will loop over each customer and extract the attributes to match
+             your column names.
+            -->
+            <tbody>
+            <tr th:each="customer : ${customerList}">
+                <td th:text="${customer.id}">Customer ID</td>
+                <td th:text="${customer.fullName}">Full Name</td>
+                <td th:text="${customer.emailAddress}">Email Address</td>
+                <td th:text="${customer.age}">Age</td>
+                <td th:text="${customer.address}">Address</td>
+                <td th:text="${customer.car}? ${customer.car.make} + ' ' + ${customer.car.model} : '(no car assigned)'">
+                    Assigned Car
+                </td>
+                <td>
+                    <!-- actions -->
+                    <a th:href="@{'/edit-customer/' + ${customer.id}}">Edit</a> |
+                    <a th:href="@{'/delete-user/' + ${customer.id}}">Delete</a> |
+                    <a th:if="${customer.car} == null" th:href="@{'/assign-car/' + ${customer.id}}">Assign</a>
+                    <a th:if="${customer.car} != null" th:href="@{'/unassign-car/' + ${customer.id}}">Remove</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <br>
+        <a th:href="@{/new-user}">Add New Customer</a>
+    </div>
+
+    <div align="center">
+        <h1>Cars</h1>
+        <br/><br/>
+        <table border="1" cellpadding="10">
+            <thead>
+            <tr>
+                <!--
+                You are creating a table here, where the header will be the Car
+                details and then the other rows will be filled by the data that
+                is sent back in the Model object.
+                -->
+                <th>Car ID</th>
+                <th>Make</th>
+                <th>Model</th>
+                <th>Assigned Customer ID</th>
+            </tr>
+            </thead>
+            <!--
+             Now that your headers are defined, you can reference the key-value
+             pair "cars" that was added to the model above.
+             Loop over each car and extract the attributes to match
+             each column name.
+            -->
+            <tbody>
+            <tr th:each="car : ${cars}">
+                <td th:text="${car.id}">Car ID</td>
+                <td th:text="${car.make}">Make</td>
+                <td th:text="${car.model}">Model</td>
+                <td th:text="${car.customer}? ${car.customer.fullName} + ' (' + ${car.customer.id} + ')' : '(no customer assigned)'">
+                    Assigned Customer ID
+                </td>
+                <a th:if="${car.customer} != null" th:href="@{'/unassign-car/' + ${car.customer.id}}">Unassign</a>
+                <a th:if="${car.customer} == null" th:href="@{'/delete-car/' + ${car.id}}">Remove</a>
+            </tr>
+            </tbody>
+        </table>
+        <br>
+        <a th:href="@{/new-car}">Add New Car</a>
+    </div>
 </div>
 
 </body>
