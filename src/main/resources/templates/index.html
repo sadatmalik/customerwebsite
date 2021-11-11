@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
   <meta charset="utf-8"/>
   <title>Welcome</title>
@@ -8,10 +9,26 @@
 <body>
 
 <div align="center">
-  <h1>Welcome to Kahoo!</h1>
+  <h1 sec:authorize="!isAuthenticated()">Welcome to Kahoo!</h1>
+  <h1 sec:authorize="isAuthenticated()" th:text="'Hello ' + ${#authentication.name}">Hello User!</h1>
 
-  <a th:href="@{/login}">Login</a>
-  <br>
+  <div sec:authorize="!isAuthenticated()">
+    <a th:href="@{/login}">Login</a>
+    <br>
+  </div>
+  <div sec:authorize="isAuthenticated()">
+    <div sec:authorize="hasAuthority('ADMIN_ROLE')">
+      <a th:href="@{/admin-dashboard}">Admin Dashboard</a>
+      <br>
+    </div>
+    <div sec:authorize="hasAuthority('USER_ROLE')">
+      <a th:href="@{/user-dashboard}">User Dashboard</a>
+      <br>
+    </div>
+    <a th:href="@{/logout}">Logout</a>
+    <br>
+  </div>
+
   <a th:href="@{/new-user}">Register New User?</a>
 
 </div>
