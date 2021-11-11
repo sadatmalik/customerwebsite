@@ -3,31 +3,35 @@
 <head>
     <meta charset="utf-8" />
     <title>Create New Car</title>
+
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.1.3/css/bootstrap.min.css} "/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <style>
+        body {
+            padding-top: 40px;
+            padding-bottom: 40px;
+            background-color: #eee;
+        }
+    </style>
 </head>
 <body>
-<div align="center">
-    <h1 th:text="'Choose Car for ' + ${customer.fullName}">Choose Car</h1>
-    <br/>
-    <table border="1" cellpadding="10">
+<div class="container">
+    <h2 th:text="'Choose Car for ' + ${customer.fullName}">Choose Car</h2>
+    <div th:replace="fragments::header">
+    </div>
+    <div class="col-7">
+    <p class="text-muted">Select from available vehicles</p>
+    <table border="1" cellpadding="10" class="table bg-white">
         <thead>
-        <tr>
-            <!--
-            You are creating a table here, where the header will be the Car
-            details and then the other rows will be filled by the data that
-            is sent back in the Model object.
-            -->
+        <tr class="bg-light">
             <th>Car ID</th>
             <th>Make</th>
             <th>Model</th>
             <th>Click to Select</th>
         </tr>
         </thead>
-        <!--
-         Now that your headers are defined, you can reference the key-value
-         pair "cars" that was added to the model above.
-         Loop over each car and extract the attributes to match
-         each column name.
-        -->
+
         <tbody>
         <tr th:each="car : ${cars}">
             <td th:text="${car.id}">Car ID</td>
@@ -40,7 +44,7 @@
         </tr>
         </tbody>
     </table>
-
+    </div>
 </div>
 </body>
 </html>
