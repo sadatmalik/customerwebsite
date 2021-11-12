@@ -33,13 +33,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/", "/webjars/", "/css/", "/login/", "/images/").permitAll()
-                .antMatchers("/new-user", "/save-user").permitAll()
-                .antMatchers("/user-dashboard").hasAuthority("USER_ROLE")
-                .anyRequest().hasAuthority("ADMIN_ROLE")
+                    .antMatchers("/", "/webjars/", "/css/", "/images/").permitAll()
+                    .antMatchers("/login/", "/logout").permitAll()
+                    .antMatchers("/new-user", "/save-user").permitAll()
+                    .antMatchers("/user-dashboard").hasAuthority("USER_ROLE")
+                    .anyRequest().hasAuthority("ADMIN_ROLE")
                 .and()
-                .formLogin()
-                .successHandler(loginSuccessHandler());
+                    .formLogin()
+                    .successHandler(loginSuccessHandler())
+                .and()
+                    .logout()
+                    .logoutSuccessUrl("/")
+                    .deleteCookies("JSESSIONID");
     }
 
     @Autowired
