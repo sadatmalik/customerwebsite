@@ -23,25 +23,28 @@
   <h2 sec:authorize="isAuthenticated()" th:text="'Hello ' + ${#authentication.name}">Hello User!</h2>
 
   <br/>
-  <div class="col">
+  <div class="col-5">
   <div class="d-grid gap-2">
-        <div sec:authorize="!isAuthenticated()">
+        <div sec:authorize="!isAuthenticated()" class="row">
           <a class="btn btn-primary" role="button" th:href="@{/login}">Login</a>
           <br>
         </div>
-        <div sec:authorize="isAuthenticated()">
-          <div sec:authorize="hasAuthority('ADMIN_ROLE')">
-            <a class="btn btn-primary" role="button" th:href="@{/admin-dashboard}">Admin Dashboard</a>
-            <br>
-          </div>
-          <div sec:authorize="hasAuthority('USER_ROLE')">
-            <a class="btn btn-primary" role="button" th:href="@{/user-dashboard}">User Dashboard</a>
-            <br>
-          </div>
+
+        <div sec:authorize="hasAuthority('ADMIN_ROLE')" class="row">
+          <a class="btn btn-primary" role="button" th:href="@{/admin-dashboard}">Admin Dashboard</a>
+          <br>
+        </div>
+        <div sec:authorize="hasAuthority('USER_ROLE')" class="row">
+          <a class="btn btn-primary" role="button" th:href="@{/user-dashboard}">User Dashboard</a>
+          <br>
+        </div>
+
+        <div sec:authorize="isAuthenticated()" class="row">
           <a class="btn btn-primary" role="button" th:href="@{/logout}">Logout</a>
           <br>
         </div>
-        <div>
+
+        <div class="row">
           <a class="btn btn-primary" role="button" th:href="@{/new-user}">Register New User?</a>
         </div>
   </div>
