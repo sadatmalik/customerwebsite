@@ -6,6 +6,8 @@ import com.sadatmalik.customerwebsite.model.User;
 import com.sadatmalik.customerwebsite.repositories.RoleRepository;
 import com.sadatmalik.customerwebsite.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,6 +23,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
     private UserRepository userRepo;
@@ -44,7 +48,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User saveUser(User user) {
+    public User saveUser(User user) throws IllegalStateException {
+
+        try {
+            loadUserByUsername(user.getUsername());
+            // username already exists in DB
+            throw new IllegalStateException("Cannot register - username already exists - " +
+                    "please select a different Username");
+        } catch (UsernameNotFoundException e) {
+            // username does not exist, proceed
+            LOGGER.info("Registering new user with unique username: " + user.getUsername());
+        }
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         if (user.getCustomer() != null && user.getAuthorities() == null) {

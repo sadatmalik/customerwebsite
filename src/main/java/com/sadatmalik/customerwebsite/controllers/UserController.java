@@ -52,9 +52,10 @@ public class UserController {
             return "error";
         }
 
-        // redirect based on authenticated role
-        User principal = (User) authentication.getPrincipal();
-        if (principal != null) {
+        // redirect based on authenticated role - this is for the case when a new user registration
+        // is attempted from the Admin dashboard (or possibly from User dashboard in future)
+        if (authentication.getPrincipal() != null && !authentication.getPrincipal().equals("anonymousUser")) {
+            User principal = (User) authentication.getPrincipal();
             List<Authority> auth = ((User) principal).getAuthorities();
             if (auth.get(0).getAuthority().equals(Authority.RoleEnum.ADMIN_ROLE.toString())) {
                 return "redirect:/admin-dashboard";

@@ -9,7 +9,7 @@ import java.util.List;
 public interface UserService extends UserDetailsService {
     public List<User> findAll();
 
-    public User saveUser(User user);
+    public User saveUser(User user) throws IllegalStateException;
 
     public void deleteUser(Long id) throws NoSuchUserException;
 }
