@@ -34,10 +34,10 @@ public class BatchConfiguration {
 
     //job
     @Bean
-    public Job eodCustomerBalances(JobBuilderFactory jobBuilderFactory, Step processEodBalances) {
+    public Job eodCustomerBalances(JobBuilderFactory jobBuilderFactory, Step processEodCustomerBalances) {
         return jobBuilderFactory.get("eod-customer-balances")
                 .incrementer(new RunIdIncrementer())
-                .start(processEodBalances)
+                .start(processEodCustomerBalances)
                 .build();
     }
 

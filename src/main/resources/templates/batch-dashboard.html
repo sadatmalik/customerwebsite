@@ -25,27 +25,90 @@
         <div class="col">
             <br/>
             <h3>Jobs</h3>
+            <a class="btn btn-primary mb-3" role="button" th:href="@{/batch/run/eod}">Start EOD Billing</a>
             <table border="1" cellpadding="10" class="table bg-white">
                 <thead>
                 <tr class="bg-light">
+                    <th>Job ID</th>
                     <th>Name</th>
+                    <th>Instance ID</th>
+                    <th>Version</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
 
                 <tbody>
                 <tr th:each="job : ${jobs}">
-                    <td th:text="${job.getName()}">Job Name</td>
+                    <td th:text="${job.id}">Job Id</td>
+                    <td th:text="${job.jobName}">Job Name</td>
+                    <td th:text="${job.instanceId}">Job Instance Id</td>
+                    <td th:text="${job.version}">Job Version</td>
                     <td>
                         <!-- actions -->
-                        <a th:href="@{'/batch/run/' + ${job.getName()}}">Run</a>
+<!--                        <a th:href="@{'/batch/run/' + ${job.getName()}}">Run</a>-->
                     </td>
                 </tr>
                 </tbody>
             </table>
-            <br>
-            <a class="btn btn-primary" role="button" th:href="@{/new-user}">Add New Customer</a>
         </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <br/>
+            <h3>Executions</h3>
+            <table border="1" cellpadding="10" class="table bg-white">
+                <thead>
+                <tr class="bg-light">
+                    <th>Exec Id</th>
+                    <th>Create Time</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Exit Status</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="item : ${execsByJob}">
+                    <td th:text="${item.getValue().get(0).id}">Exec Id</td>
+                    <td th:text="${item.getValue().get(0).createTime}">Create Time</td>
+                    <td th:text="${item.getValue().get(0).startTime}">Start Time</td>
+                    <td th:text="${item.getValue().get(0).endTime}">End Time</td>
+                    <td th:text="${item.getValue().get(0).exitStatus.exitCode}">Exit Status</td>
+                    <td>
+                        <!-- actions -->
+                        <!--                        <a th:href="@{'/batch/run/' + ${job.getName()}}">Run</a>-->
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-6">
+            <br/>
+            <h3>Steps</h3>
+            <table border="1" cellpadding="10" class="table bg-white">
+                <thead>
+                <tr class="bg-light">
+                    <th>Step Id</th>
+                    <th>Step Name</th>
+                    <th>Exit Status</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="execs : ${execsByJob.values()}">
+                    <td th:text="${execs.get(0).stepExecutions.iterator().next().id}">Step Id</td>
+                    <td th:text="${execs.get(0).stepExecutions.iterator().next().stepName}">Step Name</td>
+                    <td th:text="${execs.get(0).stepExecutions.iterator().next().exitStatus.exitCode}">Exit Status</td>
+                    <td>
+                        <!-- actions -->
+                        <!--                        <a th:href="@{'/batch/run/' + ${job.getName()}}">Run</a>-->
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
     </div>
 </div> <!-- end container-->
 </body>
