@@ -65,7 +65,7 @@ public class UserController {
             }
         }
 
-        return "index";
+        return "index"; //register-success.html
     }
 
     @GetMapping("/edit-customer/{id}")
