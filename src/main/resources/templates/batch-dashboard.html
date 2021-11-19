@@ -22,11 +22,13 @@
         <h2>Batch Dashboard</h2>
         <div th:replace="fragments::header">
         </div>
+
+        <!-- Jobs -->
         <div class="col">
             <br/>
             <h3>Jobs</h3>
             <a class="btn btn-primary mb-3" role="button" th:href="@{/batch/run/eod}">Start EOD Billing</a>
-            <table border="1" cellpadding="10" class="table bg-white">
+            <table border="1" cellpadding="10" class="table bg-white table-hover">
                 <thead>
                 <tr class="bg-light">
                     <th>Job ID</th>
@@ -38,22 +40,24 @@
                 </thead>
 
                 <tbody>
-                <tr th:each="job : ${jobs}">
+                <tr th:each="job : ${jobs}" th:id="${job.id}">
                     <td th:text="${job.id}">Job Id</td>
                     <td th:text="${job.jobName}">Job Name</td>
                     <td th:text="${job.instanceId}">Job Instance Id</td>
                     <td th:text="${job.version}">Job Version</td>
                     <td>
                         <!-- actions -->
-<!--                        <a th:href="@{'/batch/run/' + ${job.getName()}}">Run</a>-->
+                        <a th:href="@{'/batch/execs/' + ${job.id}}">Executions</a>
                     </td>
                 </tr>
                 </tbody>
             </table>
         </div>
     </div>
+
+    <!-- Executions -->
     <div class="row">
-        <div class="col-6">
+        <div class="col-8">
             <br/>
             <h3>Executions</h3>
             <table border="1" cellpadding="10" class="table bg-white">
@@ -64,42 +68,44 @@
                     <th>Start Time</th>
                     <th>End Time</th>
                     <th>Exit Status</th>
+                    <th>Actions</th>
                 </tr>
                 </thead>
 
-                <tbody>
-                <tr th:each="item : ${execsByJob}">
-                    <td th:text="${item.getValue().get(0).id}">Exec Id</td>
-                    <td th:text="${item.getValue().get(0).createTime}">Create Time</td>
-                    <td th:text="${item.getValue().get(0).startTime}">Start Time</td>
-                    <td th:text="${item.getValue().get(0).endTime}">End Time</td>
-                    <td th:text="${item.getValue().get(0).exitStatus.exitCode}">Exit Status</td>
+                <tbody id="exec-table">
+                <tr th:each="exec : ${execs}">
+                    <td th:text="${exec.id}">Exec Id</td>
+                    <td th:text="${exec.createTime}">Create Time</td>
+                    <td th:text="${exec.startTime}">Start Time</td>
+                    <td th:text="${exec.endTime}">End Time</td>
+                    <td th:text="${exec.exitStatus.exitCode}">Exit Status</td>
                     <td>
                         <!-- actions -->
-                        <!--                        <a th:href="@{'/batch/run/' + ${job.getName()}}">Run</a>-->
+                        <a th:href="@{'/batch/steps/' + ${exec.id}}">Steps</a>
                     </td>
                 </tr>
                 </tbody>
             </table>
         </div>
 
-        <div class="col-6">
+        <!-- Steps -->
+        <div class="col-4">
             <br/>
             <h3>Steps</h3>
             <table border="1" cellpadding="10" class="table bg-white">
                 <thead>
                 <tr class="bg-light">
-                    <th>Step Id</th>
+                    <th>Id</th>
                     <th>Step Name</th>
                     <th>Exit Status</th>
                 </tr>
                 </thead>
 
                 <tbody>
-                <tr th:each="execs : ${execsByJob.values()}">
-                    <td th:text="${execs.get(0).stepExecutions.iterator().next().id}">Step Id</td>
-                    <td th:text="${execs.get(0).stepExecutions.iterator().next().stepName}">Step Name</td>
-                    <td th:text="${execs.get(0).stepExecutions.iterator().next().exitStatus.exitCode}">Exit Status</td>
+                <tr th:each="step : ${steps}">
+                    <td th:text="${step.id}">Step Id</td>
+                    <td th:text="${step.stepName}">Step Name</td>
+                    <td th:text="${step.exitStatus.exitCode}">Exit Status</td>
                     <td>
                         <!-- actions -->
                         <!--                        <a th:href="@{'/batch/run/' + ${job.getName()}}">Run</a>-->

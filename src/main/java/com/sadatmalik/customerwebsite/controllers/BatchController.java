@@ -14,12 +14,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/batch")
@@ -47,21 +47,42 @@ public class BatchController {
 
     @GetMapping({"", "/"})
     public String showBatchDashboard(Model model) {
-        // just have some button on the top for start new EOD job
-        // and a table for the jobinstances; corresponding jobexecution; corresponding steps
-        // start with one table for job instances and build upon that
-        List<JobInstance> jobs = jobExplorer.getJobInstances(eodCustomerBalances.getName(), 0, 10);
+        // start with populating table for job instances and build upon that
+        List<JobInstance> jobs = jobExplorer.getJobInstances(eodCustomerBalances.getName(), 0, 3);
+        model.addAttribute("jobs", jobs);
+        return "batch-dashboard";
+    }
+
+    @GetMapping("/execs/{job_id}")
+    public String showBatchDashboardWithExecs(@PathVariable(name = "job_id") Long jobId,
+                                       Model model) {
+        List<JobInstance> jobs = jobExplorer.getJobInstances(eodCustomerBalances.getName(), 0, 3);
         model.addAttribute("jobs", jobs);
 
-        Map<JobInstance, List<JobExecution>> executionsByJob = new HashMap<>();
-        for (JobInstance job : jobs) {
-            List<JobExecution> execs = jobExplorer.getJobExecutions(job);
-            executionsByJob.put(job, execs);
-        }
-        model.addAttribute("execsByJob", executionsByJob);
+        List<JobExecution> executions = jobExplorer.getJobExecutions(jobExplorer.getJobInstance(jobId));
+        model.addAttribute("execs", executions);
 
         return "batch-dashboard";
     }
+
+    @GetMapping("/steps/{exec_id}")
+    public String showBatchDashboardWithExecsAndSteps(@PathVariable(name = "exec_id") Long execId,
+                                              Model model) {
+
+        List<JobInstance> jobs = jobExplorer.getJobInstances(eodCustomerBalances.getName(), 0, 3);
+        model.addAttribute("jobs", jobs);
+
+        JobInstance job = jobExplorer.getJobExecution(execId).getJobInstance();
+
+        List<JobExecution> executions = jobExplorer.getJobExecutions(job);
+        model.addAttribute("execs", executions);
+
+        Collection<StepExecution> steps = jobExplorer.getJobExecution(execId).getStepExecutions();
+        model.addAttribute("steps", steps);
+
+        return "batch-dashboard";
+    }
+
 
     @GetMapping("/run/eod")
     public String executeJob(Model model) {
