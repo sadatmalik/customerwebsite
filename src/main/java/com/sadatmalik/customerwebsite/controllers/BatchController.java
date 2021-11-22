@@ -1,7 +1,6 @@
 package com.sadatmalik.customerwebsite.controllers;
 
 import org.springframework.batch.core.*;
-import org.springframework.batch.core.configuration.JobRegistry;
 import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
@@ -9,6 +8,7 @@ import org.springframework.batch.core.repository.JobExecutionAlreadyRunningExcep
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,10 +26,8 @@ import java.util.List;
 public class BatchController {
 
     @Autowired
+    @Qualifier("asyncJobLauncher")
     private JobLauncher jobLauncher;
-
-    @Autowired
-    private JobRegistry jobRegistry;
 
     @Autowired
     private JobExplorer jobExplorer;
