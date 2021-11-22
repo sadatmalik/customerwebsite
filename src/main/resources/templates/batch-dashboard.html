@@ -47,7 +47,7 @@
                     <td th:text="${job.version}">Job Version</td>
                     <td>
                         <!-- actions -->
-                        <a th:href="@{'/batch/execs/' + ${job.id}}">Executions</a>
+                        <a th:href="@{'/batch/execs/' + ${job.id}}">Job Info</a>
                     </td>
                 </tr>
                 </tbody>
@@ -81,7 +81,7 @@
                     <td th:text="${exec.exitStatus.exitCode}">Exit Status</td>
                     <td>
                         <!-- actions -->
-                        <a th:href="@{'/batch/steps/' + ${exec.id}}">Steps</a>
+                        <a th:href="@{'/batch/steps/' + ${exec.id}}">Show steps</a>
                     </td>
                 </tr>
                 </tbody>

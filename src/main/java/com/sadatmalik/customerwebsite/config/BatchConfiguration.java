@@ -50,6 +50,11 @@ public class BatchConfiguration {
         return jobLauncher;
     }
 
+    @Bean
+    public static RunIdIncrementer runIdIncrementer() {
+        return new RunIdIncrementer();
+    }
+
     //job
     @Bean
     public Job eodCustomerBalances(JobBuilderFactory jobBuilderFactory, Step processEodCustomerBalances) {
