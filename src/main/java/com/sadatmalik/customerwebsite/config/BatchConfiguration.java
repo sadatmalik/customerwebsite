@@ -6,9 +6,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.JobRegistry;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.support.JobRegistryBeanPostProcessor;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.launch.support.SimpleJobLauncher;
@@ -41,7 +43,10 @@ public class BatchConfiguration {
     private static final Logger LOGGER = LoggerFactory.getLogger(BatchConfiguration.class);
 
     @Autowired
-    JobRepository jobRepository;
+    private JobRepository jobRepository;
+
+    @Autowired
+    private JobRegistry jobRegistry;
 
     //jobLauncher - asynchronous
     //initially returns a JobExecution on run() with an ExitStatus.UNKNOWN
@@ -57,6 +62,14 @@ public class BatchConfiguration {
     @Bean
     public static RunIdIncrementer runIdIncrementer() {
         return new RunIdIncrementer();
+    }
+
+    @Bean
+    // register all jobs as they are created - required for execution restarts
+    public JobRegistryBeanPostProcessor jobRegistryBeanPostProcessor() {
+        JobRegistryBeanPostProcessor postProcessor = new JobRegistryBeanPostProcessor();
+        postProcessor.setJobRegistry(jobRegistry);
+        return postProcessor;
     }
 
     //jobs

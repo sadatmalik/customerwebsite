@@ -39,14 +39,14 @@ public class BatchController {
 
         // default return execs for first job
         List<JobExecution> executions = null;
-        if ( jobs != null && jobs.size() >= 1 ) {
+        if (jobs != null && jobs.size() >= 1) {
             executions = BatchLookup.getExecutions(jobs.get(0));
         }
         model.addAttribute("execs", executions);
 
         // default return steps for first exec
         Collection<StepExecution> steps = null;
-        if ( executions != null && executions.size() != 1 ) {
+        if (executions != null && executions.size() >= 1) {
             steps = BatchLookup.getSteps(executions.get(0));
         }
         model.addAttribute("steps", steps);
@@ -56,7 +56,7 @@ public class BatchController {
 
     @GetMapping("/execs/{job_id}")
     public String showBatchDashboardWithExecs(@PathVariable(name = "job_id") Long jobId,
-                                       Model model) {
+                                              Model model) {
         model.addAttribute("jobs", BatchLookup.getJobsFor(eodCustomerBalances));
 
         List<JobExecution> executions = BatchLookup.getExecutions(jobId);
@@ -71,7 +71,7 @@ public class BatchController {
 
     @GetMapping("/steps/{exec_id}")
     public String showBatchDashboardWithExecsAndSteps(@PathVariable(name = "exec_id") Long execId,
-                                              Model model) {
+                                                      Model model) {
         model.addAttribute("jobs", BatchLookup.getJobsFor(eodCustomerBalances));
 
         JobInstance job = BatchLookup.getJobByExecId(execId);
@@ -135,4 +135,16 @@ public class BatchController {
         return showBatchDashboard(model);
     }
 
+    @GetMapping("restart/{exec_id}")
+    public String restartExecutions(@PathVariable(name = "exec_id") Long execId,
+                                        Model model) {
+        try {
+            jobOperator.restart(execId);
+        } catch (JobInstanceAlreadyCompleteException | NoSuchJobExecutionException |
+                NoSuchJobException | JobRestartException | JobParametersInvalidException e) {
+            e.printStackTrace();
+        }
+
+        return showBatchDashboard(model);
+    }
 }
