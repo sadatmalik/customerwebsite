@@ -28,6 +28,7 @@
             <br/>
             <h3>Jobs</h3>
             <a class="btn btn-primary mb-3" role="button" th:href="@{/batch/run/eod}">Start EOD Billing</a>
+            <a class="btn btn-danger mb-3" role="button" th:href="@{/batch/stop/all}">Stop Execution</a>
             <table border="1" cellpadding="10" class="table bg-white table-hover">
                 <thead>
                 <tr class="bg-light">
@@ -47,7 +48,8 @@
                     <td th:text="${job.version}">Job Version</td>
                     <td>
                         <!-- actions -->
-                        <a th:href="@{'/batch/execs/' + ${job.id}}">Job Info</a>
+                        <a th:href="@{'/batch/execs/' + ${job.id}}">Job Info</a> |
+                        <a th:href="@{'/batch/run/eod/' + ${job.instanceId}}">Restart Job</a>
                     </td>
                 </tr>
                 </tbody>

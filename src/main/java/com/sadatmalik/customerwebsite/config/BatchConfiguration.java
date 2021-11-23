@@ -2,6 +2,8 @@ package com.sadatmalik.customerwebsite.config;
 
 import com.sadatmalik.customerwebsite.model.Account;
 import com.sadatmalik.customerwebsite.repositories.AccountRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -36,6 +38,8 @@ import java.util.Map;
 @EnableBatchProcessing
 public class BatchConfiguration {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(BatchConfiguration.class);
+
     @Autowired
     JobRepository jobRepository;
 
@@ -55,12 +59,16 @@ public class BatchConfiguration {
         return new RunIdIncrementer();
     }
 
-    //job
+    //jobs
     @Bean
-    public Job eodCustomerBalances(JobBuilderFactory jobBuilderFactory, Step processEodCustomerBalances) {
+    public Job eodCustomerBalances(JobBuilderFactory jobBuilderFactory, Step processEodCustomerBalances,
+                                   Step dailyAccounts, Step customerInvoices, Step latePaymentReminders) {
         return jobBuilderFactory.get("eod-customer-balances")
                 .incrementer(new RunIdIncrementer())
                 .start(processEodCustomerBalances)
+                .next(dailyAccounts)
+                .next(customerInvoices)
+                .next(latePaymentReminders)
                 .build();
     }
 
@@ -75,6 +83,45 @@ public class BatchConfiguration {
                 .processor(processor)
                 .writer(writer)
                 .allowStartIfComplete(false)
+                .build();
+    }
+
+    @Bean
+    public Step dailyAccounts(StepBuilderFactory stepBuilderFactory,
+                              RepositoryItemReader<Account> repositoryReader,
+                              DailyAccounts dailyAccounts, AccountWriter writer) {
+        // This step just reads the csv file and then writes the entries into the database
+        return stepBuilderFactory.get("dailyAccounts")
+                .<Account, Account>chunk(100)
+                .reader(repositoryReader)
+                .processor(dailyAccounts)
+                .writer(writer)
+                .build();
+    }
+
+    @Bean
+    public Step customerInvoices(StepBuilderFactory stepBuilderFactory,
+                                 RepositoryItemReader<Account> repositoryReader,
+                                 CustomerInvoices customerInvoices, AccountWriter writer) {
+        // This step just reads the csv file and then writes the entries into the database
+        return stepBuilderFactory.get("customerInvoices")
+                .<Account, Account>chunk(100)
+                .reader(repositoryReader)
+                .processor(customerInvoices)
+                .writer(writer)
+                .build();
+    }
+
+    @Bean
+    public Step latePaymentReminders(StepBuilderFactory stepBuilderFactory,
+                                 RepositoryItemReader<Account> repositoryReader,
+                                 LatePaymentReminders latePaymentReminders, AccountWriter writer) {
+        // This step just reads the csv file and then writes the entries into the database
+        return stepBuilderFactory.get("latePaymentReminders")
+                .<Account, Account>chunk(100)
+                .reader(repositoryReader)
+                .processor(latePaymentReminders)
+                .writer(writer)
                 .build();
     }
 
@@ -102,15 +149,81 @@ public class BatchConfiguration {
                 .build();
     }
 
-    //processor
+    //processors
     @Component
-    public static class AccountProcessor implements ItemProcessor<Account, Account> {
+    public static class DailyAccounts implements ItemProcessor<Account, Account> {
         // This helps you to process the names of the employee at a set time
         @Override
         public Account process(Account account) {
             account.setUpdatedAt(new Date());
             return account;
         }
+    }
+
+    @Component
+    public static class AccountProcessor implements ItemProcessor<Account, Account> {
+        // This helps you to process the names of the employee at a set time
+        @Override
+        public Account process(Account account) {
+            generateAccounts(account);
+            account.setUpdatedAt(new Date());
+            return account;
+        }
+    }
+
+    private static void generateAccounts(Account account) {
+        //logic to generate daily accounting checks and balances
+        LOGGER.info("Generating daily accounting records for " + account);
+        try {
+            Thread.sleep(1);
+        } catch (InterruptedException e) {
+
+        }
+        LOGGER.info("Daily accounts complete for " + account);
+    }
+
+    @Component
+    public static class CustomerInvoices implements ItemProcessor<Account, Account> {
+        // This helps you to process the names of the employee at a set time
+        @Override
+        public Account process(Account account) {
+            generateInvoices(account);
+            account.setUpdatedAt(new Date());
+            return account;
+        }
+    }
+
+    private static void generateInvoices(Account account) {
+        //logic to generate daily accounting checks and balances
+        LOGGER.info("Generating daily customer invoice for " + account);
+        try {
+            Thread.sleep(1);
+        } catch (InterruptedException e) {
+
+        }
+        LOGGER.info("Daily invoicing complete for " + account);
+    }
+
+    @Component
+    public static class LatePaymentReminders implements ItemProcessor<Account, Account> {
+        // This helps you to process the names of the employee at a set time
+        @Override
+        public Account process(Account account) {
+            generateReminders(account);
+            account.setUpdatedAt(new Date());
+            return account;
+        }
+    }
+
+    private static void generateReminders(Account account) {
+        //logic to generate daily accounting checks and balances
+        LOGGER.info("Generating late payment reminders for " + account);
+        try {
+            Thread.sleep(1);
+        } catch (InterruptedException e) {
+
+        }
+        LOGGER.info("Generating late payment reminders " + account);
     }
 
     //writer

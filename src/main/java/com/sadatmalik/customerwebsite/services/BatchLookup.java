@@ -48,12 +48,28 @@ public class BatchLookup {
     }
 
     public static JobParameters getLastParams(Job job) {
-        return jobExplorer.getLastJobExecution(jobExplorer.getLastJobInstance(job.getName()))
-                .getJobParameters();
+        JobInstance jobInstance = jobExplorer.getLastJobInstance(job.getName());
+        if (jobInstance != null) {
+            return jobExplorer.getLastJobExecution(jobInstance).getJobParameters();
+        }
+        return null;
     }
 
     public static JobParameters getNextParams(Job job) {
         JobParameters lastParams = getLastParams(job);
-        return runIdIncrementer.getNext(lastParams);
+        if (lastParams != null) {
+            return runIdIncrementer.getNext(lastParams);
+        }
+
+        return new JobParameters();
+    }
+
+    public static JobParameters getJobParams(Long jobId) {
+        return getLastExecution(jobId).getJobParameters();
+    }
+
+    public static JobExecution getLastExecution(Long jobId) {
+        JobInstance job = jobExplorer.getJobInstance(jobId);
+        return jobExplorer.getLastJobExecution(job);
     }
 }
