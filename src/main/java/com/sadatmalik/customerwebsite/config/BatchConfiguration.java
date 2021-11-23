@@ -4,15 +4,13 @@ import com.sadatmalik.customerwebsite.model.Account;
 import com.sadatmalik.customerwebsite.repositories.AccountRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.Step;
+import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.JobRegistry;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.support.JobRegistryBeanPostProcessor;
 import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.launch.support.SimpleJobLauncher;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.item.ItemProcessor;
@@ -60,11 +58,6 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public static RunIdIncrementer runIdIncrementer() {
-        return new RunIdIncrementer();
-    }
-
-    @Bean
     // register all jobs as they are created - required for execution restarts
     public JobRegistryBeanPostProcessor jobRegistryBeanPostProcessor() {
         JobRegistryBeanPostProcessor postProcessor = new JobRegistryBeanPostProcessor();
@@ -75,9 +68,10 @@ public class BatchConfiguration {
     //jobs
     @Bean
     public Job eodCustomerBalances(JobBuilderFactory jobBuilderFactory, Step processEodCustomerBalances,
-                                   Step dailyAccounts, Step customerInvoices, Step latePaymentReminders) {
+                                   Step dailyAccounts, Step customerInvoices, Step latePaymentReminders,
+                                   ParametersIncrementer parametersIncrementer) {
         return jobBuilderFactory.get("eod-customer-balances")
-                .incrementer(new RunIdIncrementer())
+                .incrementer(parametersIncrementer)
                 .start(processEodCustomerBalances)
                 .next(dailyAccounts)
                 .next(customerInvoices)
@@ -257,5 +251,19 @@ public class BatchConfiguration {
         }
     }
 
+    @Component
+    // to get the next job parameters object by incrementing any necessary job values
+    public static class ParametersIncrementer implements JobParametersIncrementer {
+
+        public JobParameters getNext(JobParameters parameters) {
+            if (parameters == null || parameters.isEmpty()) {
+                return new JobParametersBuilder().addLong("run.id", 1L)
+                        .toJobParameters();
+            }
+            long id = parameters.getLong("run.id", 1L) + 1;
+            return new JobParametersBuilder().addLong("run.id", id)
+                    .toJobParameters();
+        }
+    }
 
 }

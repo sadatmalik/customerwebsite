@@ -10,12 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/batch")
@@ -84,39 +85,17 @@ public class BatchController {
         return "batch-dashboard";
     }
 
-    @GetMapping({"/run/eod", "/run/eod/{job_id}"})
-    public String executeJob(Model model, @PathVariable(name = "job_id", required = false) String jobId) {
+    @GetMapping("/run/eod")
+    public String executeJob(Model model) {
 
         try {
-            JobParameters jobParams;
 
-            //restart existing job
-            if (StringUtils.hasLength(jobId)) {
-                JobExecution lastExec = BatchLookup.getLastExecution(Long.parseLong(jobId));
-                // stop previous execution if still running
-                if (lastExec.getExitStatus().getExitCode().startsWith("UNKNOWN")) {
-                    for (StepExecution step : lastExec.getStepExecutions()) {
-                        step.setStatus(BatchStatus.STOPPED);
-                        step.setExitStatus(ExitStatus.STOPPED);
-                    }
-                    lastExec.setStatus(BatchStatus.STOPPED);
-                    lastExec.setExitStatus(ExitStatus.STOPPED);
-                    lastExec.setEndTime(new Date());
-                }
-                jobParams = BatchLookup.getJobParams(Long.parseLong(jobId));
-            }
-
-            // start new job instance
-            else {
-                jobParams = BatchLookup.getNextParams(eodCustomerBalances);
-            }
-
-            jobLauncher.run(eodCustomerBalances, jobParams);
+            jobOperator.startNextInstance(eodCustomerBalances.getName());
 
             return showBatchDashboard(model);
 
-        } catch (JobInstanceAlreadyCompleteException | JobExecutionAlreadyRunningException |
-                JobParametersInvalidException | JobRestartException e) {
+        } catch (NoSuchJobException | JobParametersNotFoundException |JobInstanceAlreadyCompleteException |
+                JobExecutionAlreadyRunningException | JobParametersInvalidException | JobRestartException e) {
             e.printStackTrace();
             model.addAttribute("error", e.getMessage());
             return "error";
